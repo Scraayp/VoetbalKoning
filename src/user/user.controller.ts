@@ -24,18 +24,30 @@ export class UserController {
 
   // Get all users
   @Get()
+  @ApiOperation({
+    description: 'Get all users',
+    summary: 'Get all users',
+  })
   getUsers() {
     return this.userService.getAllUsers();
   }
 
   // Get a user by id
   @Get('/id/:id')
+  @ApiOperation({
+    description: 'Get user by id',
+    summary: 'Get user by id',
+  })
   getUserById(@Param('id') id: number) {
     return this.userService.getUserById(id);
   }
 
   // Get a user by email
   @Get('/email/:email')
+  @ApiOperation({
+    description: 'Get user by email',
+    summary: 'Get user by email',
+  })
   getUserByEmail(@Param('email') email: string) {
     return this.userService.getUserByEmail(email);
   }
@@ -60,12 +72,32 @@ export class UserController {
 
   // Update user
   @Patch(':id')
+  @ApiOperation({
+    description: 'Update a user with new data',
+    summary: 'Update a user',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully patched..',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. (Most likely the user is not existing)',
+  })
   updateUser(@Param('id') id: string, @Body() user: userCreateDTO) {
     return this.userService.updateUser(Number(id), user);
   }
 
   // Delete user
   @Delete(':id')
+  @ApiOperation({
+    description: 'Delete a user by id',
+    summary: 'Delete a user with id',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully deleted...',
+  })
   deleteUser(@Param('id') id: number) {
     return this.userService.deleteUser(id);
   }
