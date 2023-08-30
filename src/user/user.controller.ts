@@ -1,7 +1,21 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
-import { Match, PrismaClient } from '@prisma/client';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { Match, PrismaClient, User } from '@prisma/client';
 import { UserService } from './user.service';
-import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { userCreateDTO } from './user.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -16,31 +30,43 @@ export class UserController {
 
   // Get a user by id
   @Get('/id/:id')
-  getUserById(id: number) {
+  getUserById(@Param('id') id: number) {
     return this.userService.getUserById(id);
   }
 
   // Get a user by email
   @Get('/email/:email')
-  getUserByEmail(email: string) {
+  getUserByEmail(@Param('email') email: string) {
     return this.userService.getUserByEmail(email);
   }
 
   // Create a user
   @Post()
-  createUser(@Body() data: any) {
-    return this.userService.createUser(data);
+  @ApiOperation({
+    description: 'Create a user with data',
+    summary: 'Create user',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. (Most likely the user is already existing)',
+  })
+  createUser(@Body() user: userCreateDTO) {
+    return this.userService.createUser(user);
   }
 
   // Update user
   @Patch(':id')
-  updateUser(id: number, @Body() data: any) {
-    return this.userService.updateUser(id, data);
+  updateUser(@Param('id') id: string, @Body() user: userCreateDTO) {
+    return this.userService.updateUser(Number(id), user);
   }
 
   // Delete user
   @Delete(':id')
-  deleteUser(id: number) {
+  deleteUser(@Param('id') id: number) {
     return this.userService.deleteUser(id);
   }
 }
